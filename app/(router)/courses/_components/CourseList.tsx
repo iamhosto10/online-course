@@ -11,6 +11,10 @@ import {
 import CourseItem from "./CourseItem";
 import Link from "next/link";
 
+interface ApiResponse {
+  courseLists?: ICourse[]; // Si puede ser undefined, usa ?
+}
+
 function CourseList() {
   const [courseList, setCourseList] = useState<ICourse[] | []>([]);
 
@@ -20,8 +24,11 @@ function CourseList() {
 
   const getAllCourses = async () => {
     try {
-      const courseList = await GlobalApi.getCourseList();
-      setCourseList(courseList.courseLists as ICourse[]);
+      const courseList: ApiResponse =
+        (await GlobalApi.getCourseList()) as ApiResponse;
+      if (courseList.courseLists) {
+        setCourseList(courseList.courseLists as ICourse[]);
+      }
     } catch (error) {
       console.log(error);
     }
