@@ -1,5 +1,5 @@
 import React from "react";
-import ICourse from "./ICourse";
+import { ICourse } from "@/Interfaces/course";
 import Image from "next/image";
 
 interface ICourseItem {
