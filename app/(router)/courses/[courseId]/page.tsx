@@ -7,6 +7,10 @@ import { ICourse } from "@/Interfaces/course";
 import CourseEnrollContent from "./_components/CourseEnrollContent";
 import CourseContentSection from "./_components/CourseContentSection";
 
+interface ApiResponse {
+  courseList?: ICourse; // Si puede ser undefined, usa ?
+}
+
 function CoursePreview({ params }: any) {
   const [course, setCourse] = useState<ICourse>();
   const path = usePathname();
@@ -19,9 +23,13 @@ function CoursePreview({ params }: any) {
 
   const getCourseInformation = async () => {
     try {
-      const response = await GlobalApi.GetCourseBySlug(params.courseId);
+      const response: ApiResponse = (await GlobalApi.GetCourseBySlug(
+        params.courseId
+      )) as ApiResponse;
       console.log(response);
-      setCourse(response?.courseList as ICourse);
+      if (response.courseList) {
+        setCourse(response?.courseList as ICourse);
+      }
     } catch (error) {
       console.log(error);
     }
