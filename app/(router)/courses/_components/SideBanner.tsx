@@ -3,6 +3,10 @@ import { IBanner } from "@/Interfaces/banner";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
+interface ApiResponse {
+  sideBanners?: IBanner[]; // Si puede ser undefined, usa ?
+}
+
 function SideBanner() {
   const [bannerList, setBannerList] = useState<IBanner[] | []>([]);
 
@@ -12,9 +16,11 @@ function SideBanner() {
 
   const getAllBanner = async () => {
     try {
-      const sideBarList = await GlobalApi.GetSideBar();
-      console.log(sideBarList?.sideBanners);
-      setBannerList(sideBarList?.sideBanners as IBanner[]);
+      const sideBarList: ApiResponse =
+        (await GlobalApi.GetSideBar()) as ApiResponse;
+      if (sideBarList?.sideBanners) {
+        setBannerList(sideBarList?.sideBanners as IBanner[]);
+      }
     } catch (error) {
       console.log(error);
     }
