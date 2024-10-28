@@ -4,19 +4,47 @@ import {
   BadgeIcon,
   BookOpen,
   GraduationCap,
+  LayoutGrid,
   Newspaper,
 } from "lucide-react";
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 
 function SideNav() {
+  const { user } = useUser();
   const menu = [
-    { id: 1, title: "Todos los Cursos", icon: BookOpen, path: "/courses" },
-    { id: 2, title: "Membresia", icon: BadgeCheck, path: "/memebership" },
-    { id: 3, title: "Se Instructor", icon: GraduationCap, path: "/instructor" },
-    { id: 4, title: "Noticias", icon: Newspaper, path: "/news" },
+    {
+      id: 1,
+      title: "Dashboard",
+      icon: LayoutGrid,
+      path: "/courses",
+      auth: user,
+    },
+    {
+      id: 2,
+      title: "Todos los Cursos",
+      icon: BookOpen,
+      path: "/courses",
+      auth: true,
+    },
+    {
+      id: 3,
+      title: "Membresia",
+      icon: BadgeCheck,
+      path: "/memebership",
+      auth: true,
+    },
+    {
+      id: 4,
+      title: "Se Instructor",
+      icon: GraduationCap,
+      path: "/instructor",
+      auth: true,
+    },
+    { id: 5, title: "Noticias", icon: Newspaper, path: "/news", auth: true },
     // { id: 4, title: "AllCourses", icon: BookOpen },
   ];
   const path = usePathname();
@@ -30,19 +58,23 @@ function SideNav() {
       />
       <hr className="mt-6"></hr>
       <div className="mt-5">
-        {menu.map((item, index) => (
-          <Link href={item.path}>
-            <div
-              key={index}
-              className={`group flex gap-2 mt-3 p-2 text-[18px] items-center cursor-pointer hover:bg-primary hover:text-white hover:rounded-md transition-all ease-in-out duration-700 ${
-                path.includes(item.path) && "bg-primary text-white rounded-md"
-              }`}
-            >
-              <item.icon className="group-hover:animate-bounce " />
-              <h2> {item.title}</h2>
-            </div>
-          </Link>
-        ))}
+        {menu.map(
+          (item, index) =>
+            item.auth && (
+              <Link href={item.path}>
+                <div
+                  key={index}
+                  className={`group flex gap-2 mt-3 p-2 text-[18px] items-center cursor-pointer hover:bg-primary hover:text-white hover:rounded-md transition-all ease-in-out duration-700 ${
+                    path.includes(item.path) &&
+                    "bg-primary text-white rounded-md"
+                  }`}
+                >
+                  <item.icon className="group-hover:animate-bounce " />
+                  <h2> {item.title}</h2>
+                </div>
+              </Link>
+            )
+        )}
       </div>
     </div>
   );
